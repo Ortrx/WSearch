@@ -1,8 +1,8 @@
 # WSearch
 
-Just a little Frontend Searching Engine. 
+Just a little frontend searching engine. 
 
-In my Example it can give you some information about a few Harry Potter Characters but you can modify the code for your purposes.
+In my example it can give you some information about a few Harry Potter characters but you can modify the code for your purposes.
 
 
 ## Installation
@@ -21,7 +21,7 @@ I hosted the site here: https://harry-potter-gpt.netlify.app
 
 ## Usage/Examples
 
-You can modify the results or add your own characters by adding their names in the harryPotterCharacters const and adding some information about them in the getCharacterInfo(name) function.
+You can modify the results or add your own characters by adding their names in the harryPotterCharacters const and adding some information about them in the getCharacterInfo(name) function. (Both in script part of index.html file)
 
 It could look like this:
 
