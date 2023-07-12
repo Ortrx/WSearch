@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Harry Potter GPT</title>
+	<link rel="icon" type="image/x-icon" href="favicon-96x96.png">
+	<style>
+	body {
+		margin: 0;
+		padding: 0;
+		background: #f2f2f2;
+		font-family: 'Helvetica Neue', sans-serif; /* use your preferred font family */
+		width: 100%;
+  		height: 100%;
+	}
+	.header {
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		overflow: hidden;
+		padding: 0;
+	}
+	section {
+  		margin: 0;
+  		position: relative;
+  		width: 100%;
+  		height: 100%;
+  		background-color: #c0b3a0;
+	}
+	.content {
+  		position: absolute;
+  		width: 100%;
+  		height: 100%;
+  		overflow: hidden;
+	}
+	.paralax {
+  		position: absolute;
+  		width: 100%;
+  		height: 100%;
+  		overflow: hidden;
+  		background: url("http://www.testomic.com/public/codepen-assets/img/paralax/background.jpg");
+  		background-size: cover;
+  		background-position: center;
+  		filter: blur(10px);
+	}
+	.paralax .layer {
+  		position: absolute;
+  		width: 400%;
+	}
+	.paralax .foreground {
+  		height: 50%;
+  		bottom: 0;
+  		background: url("http://www.testomic.com/public/codepen-assets/img/paralax/foreground.png") repeat-x;
+  		background-size: 25% 100%;
+  		animation: slideshow 30s linear infinite;
+	}
+	.paralax .hills {
+  		height: 40%;
+  		bottom: 15%;
+  		background: url("http://www.testomic.com/public/codepen-assets/img/paralax/hills.png") repeat-x;
+  		background-size: 25% 100%;
+  		animation: slideshow 60s linear infinite;
+	}
+	.paralax .rocks1 {
+  		height: 35%;
+ 		bottom: 25%;
+  		background: url("http://www.testomic.com/public/codepen-assets/img/paralax/rocks1.png") repeat-x;
+  		background-size: 25% 100%;
+  		animation: slideshow 120s linear infinite;
+	}
+	.paralax .rocks2 {
+  		height: 40%;
+  		bottom: 15%;
+  		background: url("http://www.testomic.com/public/codepen-assets/img/paralax/rocks2.png") repeat-x;
+  		background-size: 25% 100%;
+  		animation: slideshow 240s linear infinite;
+	}
+	@keyframes slideshow {
+  		0% {
+    		transform: translateX(0%);
+  		}
+  		100% {
+    		transform: translateX(-50%);
+  		}
+	}
+	@keyframes dayToNight {
+  		0% {
+    		-webkit-filter: hue-rotate(0deg) brightness(1);
+    		filter: hue-rotate(0deg) brightness(1);
+  		}
+  		50% {
+    		-webkit-filter: hue-rotate(180deg) brightness(0.1);
+    		filter: hue-rotate(180deg) brightness(0.1);
+  		}
+  		100% {
+    		-webkit-filter: hue-rotate(0deg) brightness(1);
+    		filter: hue-rotate(0deg) brightness(1);
+  		}
+	}
+	.search-bar {
+		background: #fff;
+		padding: 20px 27px 20px 10px;
+		border-radius: 10px;
+		box-shadow: 0 8px 6px -6px rgba(0,0,0,0.7);
+		width: 70%;
+		max-width: 550px;
+		position: relative;
+		z-index: 1;
+		margin-bottom: 20px;
+		font-family: 'Roboto', sans-serif; /* use your preferred font family */
+	}
+	input[type="text"] {
+		width: 100%;
+		padding: 10px;
+		border: none;
+		border-radius: 5px;
+		font-size: 16px;
+		color: #333;
+		margin-bottom: 10px;
+		font-family: 'Roboto', sans-serif; /* use your preferred font family */
+	}
+	input[type="submit"] {
+		background: #333;
+		color: #fff;
+		border: 2px solid #333;
+		padding: 10px 20px;
+		border-radius: 5px;
+		font-size: 16px;
+		cursor: pointer;
+		font-family: 'Roboto', sans-serif; /* use your preferred font family */
+	}
+	input[type="submit"]:hover {
+		background-color: #fff;
+		color: #333;
+		border-color: #333;
+		transition: all 0.1s ease-in-out;
+	}
+	#character-info-container {
+		background: #fff;
+		padding: 5px 27px 5px 10px;
+		border-radius: 10px;
+		box-shadow: 0 8px 6px -6px rgba(0,0,0,0.7);
+		width: 70%;
+		max-width: 550px;
+		position: relative;
+		z-index: 1;
+		font-family: 'Roboto', sans-serif; /* use your preferred font family */
+	}
+	#character-info-container:empty {
+		  display: none;
+	}
+	#character-info-container h1 {
+		  text-align: center;
+		  text-decoration: underline;
+	}
+	#character-info-container h2 {
+		  text-decoration: underline;
+	}
+	#character-info-container p {
+		  padding-left: 40px;
+		  padding-right: 40px;
+	}
+	#character-info-container li {
+		  padding-left: 20px;
+	}
+	#character-info-container mark {
+		  background-color: rgb(255, 101, 101);
+	}
+	#search-suggestions{
+		position: absolute;
+	}
+	</style>
+</head>
+<body>
+	<header class="header">
+		<div class="content">
+            <div class="paralax">
+                <div class="layer rocks2"></div>
+                <div class="layer rocks1"></div>
+                <div class="layer hills"></div>
+                <div class="layer foreground"></div>
+            </div>
+        </div>
+		<form class="search-bar" id="search-form">
+		  <input type="text" placeholder="Search..." list="search-suggestions">
+		  <datalist id="search-suggestions"></datalist>
+		  <input id="search-button" type="submit" value="Search">
+		</form>
+		<div id="character-info-container"></div>
+	</header>
+	<script>
+		const harryPotterCharacters = [
+			"Harry Potter",
+			"Hermione Granger",
+			"Ron Weasley",
+			"Albus Dumbledore",
+			"Severus Snape",
+			"Rubeus Hagrid",
+			"Draco Malfoy",
+			"Toni Huber",
+			// add all Harry Potter characters here
+		];
+		const searchSuggestions = document.getElementById("search-suggestions");
+		const searchForm = document.getElementById("search-form");
+		const characterInfoContainer = document.getElementById("character-info-container");
+		const searchInput = document.querySelector("input[type='text']");
+		
+		function search(event) {
+			event.preventDefault();
+			const searchTerm = searchInput.value;
+			const filteredCharacters = harryPotterCharacters.filter((character) => {
+				return character.toLowerCase().includes(searchTerm.toLowerCase());
+			});
+			if (filteredCharacters.length === 1) { // only one suggestion left
+				const characterInfo = getCharacterInfo(filteredCharacters[0]);
+				if (characterInfo) {
+					const characterInfoElement = document.createElement("div");
+					characterInfoElement.classList.add("character-info");
+					const highlightedDescription = characterInfo.description.replace(
+						new RegExp(searchTerm, "gi"),
+						'<mark>$&</mark>'
+					);
+					characterInfoElement.innerHTML = `
+						<h1>${characterInfo.name}</h1>
+						<p>${highlightedDescription}</p>
+						<ul>
+							<h2>Stats:</h2>
+							<strong>Age:</strong> ${characterInfo.stats.age} <br>
+							<strong>House:</strong> ${characterInfo.stats.house} <br>
+							<strong>Wand:</strong> ${characterInfo.stats.wand} <br>
+							<strong>Patronus:</strong> ${characterInfo.stats.patronus} <br>
+						</ul>
+					`;
+					characterInfoContainer.innerHTML = characterInfoElement.outerHTML;
+				}
+			} else if (filteredCharacters.length > 1) { // multiple suggestions left
+				// display suggestions
+				searchSuggestions.innerHTML = "";
+				filteredCharacters.forEach((character) => {
+					const option = document.createElement("option");
+					option.value = character;
+					searchSuggestions.appendChild(option);
+				});
+				searchSuggestions.style.display = "block"; // show search suggestions
+			} else { // no suggestions left
+				searchSuggestions.innerHTML = "";
+				characterInfoContainer.innerHTML = "";
+				searchSuggestions.style.display = "none"; // hide search suggestions
+			}
+		}
+		
+		function getCharacterInfo(name) {
+  			switch (name) {
+    			case "Harry Potter":
+      			return {
+        			name: "Harry Potter",
+        			description: "Harry Potter is the main character in the Harry Potter series.",
+        			stats: {
+          				age: 17,
+          				house: "Gryffindor",
+          				wand: "11\" Holly, Phoenix feather core",
+          				patronus: "Stag",
+        			},
+      			};
+    			case "Hermione Granger":
+      			return {
+        			name: "Hermione Granger",
+        			description: "Hermione Granger is the best friend of Harry Potter and Ron Weasley.",
+        			stats: {
+          				age: 17,
+          				house: "Gryffindor",
+          				wand: "10.75\" Vine, Dragon heartstring core",
+          				patronus: "Otter",
+        			},
+      			};
+    			case "Ron Weasley":
+      			return {
+        			name: "Ron Weasley",
+        			description: "Ron Weasley is the best friend of Harry Potter and Hermione Granger.",
+        			stats: {
+          				age: 17,
+          				house: "Gryffindor",
+          				wand: "14\" Willow, Unicorn hair core",
+          				patronus: "Jack Russell Terrier",
+        			},
+      			};
+    			case "Albus Dumbledore":
+      			return {
+        			name: "Albus Dumbledore",
+        			description: "Albus Dumbledore is one of the most powerful wizards of all time, and a wise and kind mentor to Harry Potter.",
+        			stats: {
+          				age: 116,
+          				house: "Gryffindor",
+          				wand: "15\" Elder, Thestral tail hair core",
+          				patronus: "Phoenix",
+        			},
+      			};
+    			case "Severus Snape":
+      			return {
+        			name: "Severus Snape",
+        			description: "Severus Snape is a complex and enigmatic character, with a troubled past and a surprising loyalty to Harry Potter.",
+        			stats: {
+          				age: 38,
+          				house: "Slytherin",
+          				wand: "13\" Yew, Phoenix feather core",
+          				patronus: "Doe",
+        			},
+      			};
+    			case "Rubeus Hagrid":
+      			return {
+        			name: "Rubeus Hagrid",
+        			description: "Rubeus Hagrid is a gentle giant with a great love for magical creatures, and a loyal friend to Harry Potter.",
+        			stats: {
+          				age: 63,
+          				house: "Gryffindor",
+          				wand: "16\" Oak, Unknown core",
+          				patronus: "N/A",
+        			},
+      			};
+    			case "Draco Malfoy":
+      			return {
+        			name: "Draco Malfoy",
+        			description: "Draco Malfoy is a cunning and ambitious Slytherin, and one of Harry Potter's most bitter rivals.",
+        				stats: {
+          					age: 17,
+          					house: "Slytherin",
+          					wand: "10\" Hawthorn, Unicorn hair core",
+          					patronus: "N/A",
+        				},
+				};
+    			case "Toni Huber":
+      			return {
+        			name: "Toni Huber",
+        			description: "Toni Huber ist Toni Huber. Toni Huber liebt seine Spielsachen. Er ist der Bruder von Fee, Mika, Juli und Robin",
+        			stats: {
+          				age: 6,
+          				house: "Fuchsgruppe",
+        				wand: "N/A",
+          				patronus: "Eichhörnchenhäschenschaf",
+        			},
+      			};
+    			// add more cases here for additional characters
+    			default:
+      			return null;
+  			}
+		}
+		
+		searchForm.addEventListener("submit", search);
+		
+		searchInput.addEventListener("input", function() { // change event listener to input
+			const searchTerm = searchInput.value;
+			if (searchTerm) { // check if search input is not empty
+				const filteredCharacters = harryPotterCharacters.filter((character) => {
+					return character.toLowerCase().includes(searchTerm.toLowerCase());
+				});
+				if (filteredCharacters.length > 0) { // check if there are suggestions
+					searchSuggestions.innerHTML = "";
+					filteredCharacters.forEach((character) => {
+						const option = document.createElement("option");
+						option.value = character;
+						searchSuggestions.appendChild(option);
+					});
+					searchSuggestions.style.display = "block"; // show search suggestions
+				} else {
+					searchSuggestions.innerHTML = "";
+					searchSuggestions.style.display = "none"; // hide search suggestions
+				}
+			} else {
+				searchSuggestions.innerHTML = "";
+				searchSuggestions.style.display = "none"; // hide search suggestions
+			}
+		});
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
