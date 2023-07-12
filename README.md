@@ -16,8 +16,7 @@ git clone https://github.com/Ortrx/WSearch.git
 or simply download the .zip file.
 ## Demo
 
-I hosted the site here: https://harry-potter-gpt.netlify.app
-
+I hosted the site here: wsearchdemo.netlify.app
 
 ## Usage/Examples
 
